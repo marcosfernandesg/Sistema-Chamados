@@ -94,7 +94,7 @@ public class Main {
         System.out.println("│ 1 - ABERTO");
         System.out.println("│ 2 - PENDENTE");
         System.out.println("│ 3 - FINALIZADO");
-        System.out.print("│ Escolha: ");
+        System.out.print("│ Escolha: ");1
 
         int opcao = Integer.parseInt(scanner.nextLine());
         StatusChamado status = null;

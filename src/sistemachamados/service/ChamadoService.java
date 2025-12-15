@@ -2,23 +2,42 @@ package sistemachamados.service;
 
 import sistemachamados.model.StatusChamado;
 import sistemachamados.model.Chamado;
+import sistemachamados.repository.ChamadoRepository;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChamadoService {
     private List<Chamado> chamados;
+    private ChamadoRepository repository;
     private int proximoId;
 
     public ChamadoService() {
-        this.chamados = new ArrayList<>();
-        this.proximoId = 1;  // Começa do #001
+        this.repository = new ChamadoRepository();
+        this.chamados = repository.carregar();
+        this.proximoId = gerarProximoId();
     }
+
+    private int gerarProximoId() {
+        int maiorId = 0;
+
+        for (Chamado c : chamados) {
+            if (c.getId() > maiorId) {
+                maiorId = c.getId();
+            }
+        }
+
+        return maiorId + 1;
+    }
+
+
 
     public void abrirChamado(String area, String descricao) {
         Chamado novoChamado = new Chamado(proximoId, area, descricao);
         chamados.add(novoChamado);
+        repository.salvar(chamados);
         System.out.println("✓ Chamado #" + proximoId + " aberto com sucesso!");
-        proximoId++;  // Próximo será #002, #003...
+        proximoId++;
+
     }
 
     public List<Chamado> listarTodos() {
@@ -41,6 +60,7 @@ public class ChamadoService {
         for (Chamado c : chamados) {
             if (c.getId() == id) {
                 c.setStatus(StatusChamado.FINALIZADO);
+                repository.salvar(chamados);
                 System.out.println("✓ Chamado #" + id + " finalizado!");
                 return;
             }
